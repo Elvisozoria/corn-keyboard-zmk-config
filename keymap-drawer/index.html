@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corne · keymap</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem; background: #fafafa; color: #222; }
+  header { position: sticky; top: 0; background: #fafafa; padding: .5rem 0; display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; z-index: 1; }
+  input { font-size: 1rem; padding: .5rem .75rem; border: 1px solid #ccc; border-radius: 6px; min-width: 14rem; }
+  button { font-size: .9rem; padding: .45rem .8rem; border: 1px solid #ccc; border-radius: 6px; background: #fff; cursor: pointer; }
+  button[aria-pressed="true"] { background: #222; color: #fff; border-color: #222; }
+  #map svg { width: 100%; max-width: 900px; height: auto; }
+  #map svg.searching .key:not(.hit) { opacity: .25; }
+  #map .key.hit rect { fill: #ffd43b !important; stroke: #b8860b !important; }
+  small { color: #666; }
+</style>
+</head>
+<body>
+<header>
+  <input id="q" type="search" placeholder="Buscar tecla: {, Cmd, 7, BT…" aria-label="Buscar tecla" autofocus>
+  <span id="layers"></span>
+  <small id="count"></small>
+</header>
+<div id="map">Cargando…</div>
+<script>
+// ponytail: SVG generado por keymap-drawer; la búsqueda solo resalta grupos .key cuyo texto coincide
+fetch('corne.svg').then(r => r.text()).then(txt => {
+  const map = document.getElementById('map');
+  map.innerHTML = txt;
+  const svg = map.querySelector('svg');
+  const layerGroups = [...svg.querySelectorAll('g[class^="layer-"]')];
+  const fullBox = svg.getAttribute('viewBox');
+  svg.removeAttribute('width'); svg.removeAttribute('height');
+  const q = document.getElementById('q'), count = document.getElementById('count');
+
+  // Botones para ver una capa sola
+  const bar = document.getElementById('layers');
+  const show = name => {
+    layerGroups.forEach(g => g.style.display = !name || g.classList.contains('layer-' + name) ? '' : 'none');
+    const g = name && svg.querySelector('g.layer-' + CSS.escape(name));
+    if (g) { // recorta el viewBox a la capa elegida para que no queden huecos
+      const b = g.getBBox(), m = g.transform.baseVal.consolidate().matrix;
+      svg.setAttribute('viewBox', `${m.e + b.x - 10} ${m.f + b.y - 10} ${b.width + 20} ${b.height + 20}`);
+    } else svg.setAttribute('viewBox', fullBox);
+    bar.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === (name || '')));
+  };
+  [['', 'Todas'], ...layerGroups.map(g => [g.className.baseVal.split('layer-')[1], null])].forEach(([l, label]) => {
+    const b = document.createElement('button');
+    b.dataset.l = l; b.textContent = label || l; b.onclick = () => show(l);
+    bar.append(b);
+  });
+  show('');
+
+  q.oninput = () => {
+    const term = q.value.trim().toLowerCase();
+    let n = 0;
+    svg.classList.toggle('searching', !!term);
+    svg.querySelectorAll('.key, .combo').forEach(k => {
+      const hit = !!term && [...k.querySelectorAll('text, tspan')].some(t => t.textContent.trim().toLowerCase() === term)
+                 || (term.length > 1 && k.textContent.toLowerCase().includes(term));
+      k.classList.toggle('hit', hit); if (hit) n++;
+    });
+    count.textContent = term ? n + ' coincidencia(s)' : '';
+  };
+});
+</script>
+</body>
+</html>

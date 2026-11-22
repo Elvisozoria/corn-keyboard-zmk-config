@@ -1,0 +1,19 @@
+# Etiquetas legibles (raw_binding_map no pisa el mapa de símbolos por defecto)
+parse_config:
+  raw_binding_map:
+    "&dtap_tab": {t: Tab, h: "2× Esc"}
+    "&kp LCTRL": Ctrl
+    "&kp LEFT_CONTROL": Ctrl
+    "&kp LSHFT": Shift
+    "&kp LEFT_SHIFT": Shift
+    "&kp RIGHT_SHIFT": Shift
+    "&kp LGUI": Cmd
+    "&kp RGUI": Cmd
+    "&kp RIGHT_COMMAND": Cmd
+    "&kp RALT": Alt
+    "&kp BSPC": ⌫
+    "&kp BACKSPACE": ⌫
+    "&kp RET": Enter
+    "&kp SPACE": Space
+  zmk_combos:
+    screenshot: {key: "📸 Screenshot"}

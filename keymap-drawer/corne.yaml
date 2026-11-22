@@ -1,0 +1,187 @@
+layout: {zmk_keyboard: corne}
+layers:
+  default:
+  - {t: Tab, h: 2× Esc}
+  - Q
+  - W
+  - E
+  - R
+  - T
+  - Y
+  - U
+  - I
+  - O
+  - P
+  - ⌫
+  - Ctrl
+  - A
+  - S
+  - D
+  - F
+  - G
+  - H
+  - J
+  - K
+  - L
+  - ;
+  - ''''
+  - Shift
+  - Z
+  - X
+  - C
+  - V
+  - B
+  - N
+  - M
+  - ','
+  - .
+  - /
+  - Shift
+  - Cmd
+  - {t: ▽, type: trans}
+  - Space
+  - Enter
+  - Cmd
+  - Alt
+  lower:
+  - TAB
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '7'
+  - '8'
+  - '9'
+  - '0'
+  - ⌫
+  - Ctrl
+  - {type: held}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '4'
+  - '5'
+  - '6'
+  - '-'
+  - +
+  - Shift
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '1'
+  - '2'
+  - '3'
+  - /
+  - '*'
+  - Cmd
+  - {type: held}
+  - Space
+  - Enter
+  - '0'
+  - .
+  raise:
+  - TAB
+  - '!'
+  - {t: ▽, type: trans}
+  - '&'
+  - $
+  - '%'
+  - '@'
+  - (
+  - )
+  - '{'
+  - '}'
+  - ⌫
+  - Ctrl
+  - '*'
+  - {type: held}
+  - '#'
+  - +
+  - '='
+  - '-'
+  - '['
+  - ']'
+  - $
+  - '%'
+  - '`'
+  - Shift
+  - '~'
+  - {t: ▽, type: trans}
+  - /
+  - '|'
+  - \
+  - _
+  - <
+  - '>'
+  - ^
+  - '?'
+  - Shift
+  - Cmd
+  - {type: held}
+  - Space
+  - Enter
+  - Cmd
+  - Alt
+  arrow:
+  - {t: ▽, type: trans}
+  - BT CLR
+  - {t: BT, h: '0'}
+  - {t: BT, h: '1'}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - UP
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - ⌫
+  - Ctrl
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {type: held}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - LEFT
+  - DOWN
+  - RIGHT
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - Shift
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - Shift
+  - Cmd
+  - {type: held}
+  - Space
+  - Enter
+  - Cmd
+  - Alt
+combos:
+- p: [13, 37]
+  k: {t: Ctl+A, h: lower}
+  l: [default]
+- p: [14, 37]
+  k: {t: Ctl+S, h: raise}
+  l: [default]
+- p: [15, 37]
+  k: {t: Ctl+D, h: arrow}
+  l: [default]
+- p: [37, 4]
+  k: 📸 Screenshot
+  l: [default]
