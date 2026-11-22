@@ -11,14 +11,14 @@
   button { font-size: .9rem; padding: .45rem .8rem; border: 1px solid #ccc; border-radius: 6px; background: #fff; cursor: pointer; }
   button[aria-pressed="true"] { background: #222; color: #fff; border-color: #222; }
   #map svg { width: 100%; max-width: 900px; height: auto; }
-  #map svg.searching .key:not(.hit) { opacity: .25; }
-  #map .key.hit rect { fill: #ffd43b !important; stroke: #b8860b !important; }
+  #map svg.searching g.key:not(.hit) { opacity: .25; }
+  #map g.key.hit rect { fill: #ffd43b !important; stroke: #b8860b !important; }
   small { color: #666; }
 </style>
 </head>
 <body>
 <header>
-  <input id="q" type="search" placeholder="Buscar tecla: {, Cmd, 7, BT…" aria-label="Buscar tecla" autofocus>
+  <input id="q" type="search" placeholder="Buscar: {, cmd, 7, bt, captura…" aria-label="Buscar tecla" autofocus>
   <span id="layers"></span>
   <small id="count"></small>
 </header>
@@ -53,12 +53,16 @@ fetch('corne.svg').then(r => r.text()).then(txt => {
   show('');
 
   q.oninput = () => {
-    const term = q.value.trim().toLowerCase();
+    const raw = q.value.trim().toLowerCase();
+    // alias para encontrar teclas dibujadas como ícono (se busca en el nombre del ícono)
+    const term = ({cmd: 'command', ctrl: 'control', alt: 'option', bt: 'bluetooth', screenshot: 'camera', captura: 'camera',
+                   enter: 'return', bspc: 'backspace', borrar: 'backspace', espacio: 'space', flecha: 'arrow'})[raw] || raw;
     let n = 0;
     svg.classList.toggle('searching', !!term);
-    svg.querySelectorAll('.key, .combo').forEach(k => {
+    svg.querySelectorAll("g.key, g.combo").forEach(k => {
       const hit = !!term && [...k.querySelectorAll('text, tspan')].some(t => t.textContent.trim().toLowerCase() === term)
-                 || (term.length > 1 && k.textContent.toLowerCase().includes(term));
+                 || (term.length > 1 && (k.textContent.toLowerCase().includes(term)
+                     || [...k.querySelectorAll('use')].some(u => (u.getAttribute('href') || '').includes(term))));
       k.classList.toggle('hit', hit); if (hit) n++;
     });
     count.textContent = term ? n + ' coincidencia(s)' : '';
