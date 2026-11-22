@@ -1,19 +1,30 @@
-# Etiquetas legibles (raw_binding_map no pisa el mapa de símbolos por defecto)
+# Etiquetas e íconos (raw_binding_map no pisa el mapa de símbolos por defecto)
+# Íconos: $$mdi:<nombre>$$ de https://pictogrammers.com/library/mdi/
 parse_config:
   raw_binding_map:
-    "&dtap_tab": {t: Tab, h: "2× Esc"}
-    "&kp LCTRL": Ctrl
-    "&kp LEFT_CONTROL": Ctrl
-    "&kp LSHFT": Shift
-    "&kp LEFT_SHIFT": Shift
-    "&kp RIGHT_SHIFT": Shift
-    "&kp LGUI": Cmd
-    "&kp RGUI": Cmd
-    "&kp RIGHT_COMMAND": Cmd
-    "&kp RALT": Alt
-    "&kp BSPC": ⌫
-    "&kp BACKSPACE": ⌫
-    "&kp RET": Enter
-    "&kp SPACE": Space
+    "&dtap_tab": {t: "$$mdi:keyboard-tab$$", h: "2× Esc"}
+    "&ss_dance": {t: "$$mdi:camera$$", h: "2×  3×"}
+    "&bt_clear BT_CLR_CMD 0": {t: "$$mdi:bluetooth-off$$", h: "sostener 1s"}
+    "&bt BT_SEL 0": {t: "$$mdi:bluetooth$$", h: "BT1"}
+    "&bt BT_SEL 1": {t: "$$mdi:bluetooth$$", h: "BT2"}
+    "&bt BT_SEL 2": {t: "$$mdi:bluetooth$$", h: "BT3"}
+    "&kp UP": "$$mdi:arrow-up$$"
+    "&kp DOWN": "$$mdi:arrow-down$$"
+    "&kp LEFT": "$$mdi:arrow-left$$"
+    "&kp RIGHT": "$$mdi:arrow-right$$"
+    "&kp LCTRL": "$$mdi:apple-keyboard-control$$"
+    "&kp LEFT_CONTROL": "$$mdi:apple-keyboard-control$$"
+    "&kp LSHFT": "$$mdi:apple-keyboard-shift$$"
+    "&kp LEFT_SHIFT": "$$mdi:apple-keyboard-shift$$"
+    "&kp RIGHT_SHIFT": "$$mdi:apple-keyboard-shift$$"
+    "&kp LGUI": "$$mdi:apple-keyboard-command$$"
+    "&kp RGUI": "$$mdi:apple-keyboard-command$$"
+    "&kp RIGHT_COMMAND": "$$mdi:apple-keyboard-command$$"
+    "&kp RALT": "$$mdi:apple-keyboard-option$$"
+    "&kp BSPC": "$$mdi:backspace-outline$$"
+    "&kp BACKSPACE": "$$mdi:backspace-outline$$"
+    "&kp RET": "$$mdi:keyboard-return$$"
+    "&kp SPACE": "$$mdi:keyboard-space$$"
+    "&kp TAB": "$$mdi:keyboard-tab$$"
   zmk_combos:
-    screenshot: {key: "📸 Screenshot"}
+    screenshot: {key: {t: "$$mdi:camera$$", h: "área"}}

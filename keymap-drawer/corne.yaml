@@ -1,7 +1,7 @@
 layout: {zmk_keyboard: corne}
 layers:
   default:
-  - {t: Tab, h: 2× Esc}
+  - {t: '$$mdi:keyboard-tab$$', h: 2× Esc}
   - Q
   - W
   - E
@@ -12,8 +12,8 @@ layers:
   - I
   - O
   - P
-  - ⌫
-  - Ctrl
+  - $$mdi:backspace-outline$$
+  - $$mdi:apple-keyboard-control$$
   - A
   - S
   - D
@@ -25,7 +25,7 @@ layers:
   - L
   - ;
   - ''''
-  - Shift
+  - $$mdi:apple-keyboard-shift$$
   - Z
   - X
   - C
@@ -36,58 +36,58 @@ layers:
   - ','
   - .
   - /
-  - Shift
-  - Cmd
-  - {t: ▽, type: trans}
-  - Space
-  - Enter
-  - Cmd
-  - Alt
-  lower:
-  - TAB
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - $$mdi:apple-keyboard-shift$$
+  - $$mdi:apple-keyboard-command$$
+  - {t: '$$mdi:camera$$', h: 2×  3×}
+  - $$mdi:keyboard-space$$
+  - $$mdi:keyboard-return$$
+  - $$mdi:apple-keyboard-command$$
+  - $$mdi:apple-keyboard-option$$
+  numbers:
+  - $$mdi:keyboard-tab$$
+  - ''
+  - ''
+  - ''
+  - ''
+  - ''
+  - ''
   - '7'
   - '8'
   - '9'
   - '0'
-  - ⌫
-  - Ctrl
+  - $$mdi:backspace-outline$$
+  - $$mdi:apple-keyboard-control$$
   - {type: held}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - ''
+  - ''
+  - ''
+  - ''
+  - ''
   - '4'
   - '5'
   - '6'
   - '-'
   - +
-  - Shift
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - $$mdi:apple-keyboard-shift$$
+  - ''
+  - ''
+  - ''
+  - ''
+  - ''
+  - ''
   - '1'
   - '2'
   - '3'
   - /
   - '*'
-  - Cmd
+  - $$mdi:apple-keyboard-command$$
   - {type: held}
-  - Space
-  - Enter
+  - $$mdi:keyboard-space$$
+  - $$mdi:keyboard-return$$
   - '0'
   - .
-  raise:
-  - TAB
+  icons:
+  - $$mdi:keyboard-tab$$
   - '!'
   - {t: ▽, type: trans}
   - '&'
@@ -98,8 +98,8 @@ layers:
   - )
   - '{'
   - '}'
-  - ⌫
-  - Ctrl
+  - $$mdi:backspace-outline$$
+  - $$mdi:apple-keyboard-control$$
   - '*'
   - {type: held}
   - '#'
@@ -108,10 +108,10 @@ layers:
   - '-'
   - '['
   - ']'
-  - $
-  - '%'
+  - '"'
+  - ':'
   - '`'
-  - Shift
+  - $$mdi:apple-keyboard-shift$$
   - '~'
   - {t: ▽, type: trans}
   - /
@@ -122,66 +122,66 @@ layers:
   - '>'
   - ^
   - '?'
-  - Shift
-  - Cmd
+  - $$mdi:apple-keyboard-shift$$
+  - $$mdi:apple-keyboard-command$$
   - {type: held}
-  - Space
-  - Enter
-  - Cmd
-  - Alt
-  arrow:
+  - $$mdi:keyboard-space$$
+  - $$mdi:keyboard-return$$
+  - $$mdi:apple-keyboard-command$$
+  - $$mdi:apple-keyboard-option$$
+  arrows:
   - {t: ▽, type: trans}
-  - BT CLR
-  - {t: BT, h: '0'}
-  - {t: BT, h: '1'}
+  - {t: '$$mdi:bluetooth-off$$', h: sostener 1s}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - UP
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - ⌫
-  - Ctrl
+  - $$mdi:arrow-up$$
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - $$mdi:backspace-outline$$
+  - $$mdi:apple-keyboard-control$$
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {type: held}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - LEFT
-  - DOWN
-  - RIGHT
+  - $$mdi:arrow-left$$
+  - $$mdi:arrow-down$$
+  - $$mdi:arrow-right$$
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - Shift
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - $$mdi:apple-keyboard-shift$$
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - {t: '$$mdi:bluetooth$$', h: BT1}
+  - {t: '$$mdi:bluetooth$$', h: BT2}
+  - {t: '$$mdi:bluetooth$$', h: BT3}
   - {t: ▽, type: trans}
-  - Shift
-  - Cmd
+  - $$mdi:apple-keyboard-shift$$
+  - $$mdi:apple-keyboard-command$$
   - {type: held}
-  - Space
-  - Enter
-  - Cmd
-  - Alt
+  - $$mdi:keyboard-space$$
+  - $$mdi:keyboard-return$$
+  - $$mdi:apple-keyboard-command$$
+  - $$mdi:apple-keyboard-option$$
 combos:
 - p: [13, 37]
-  k: {t: Ctl+A, h: lower}
+  k: {t: Ctl+A, h: numbers}
   l: [default]
 - p: [14, 37]
-  k: {t: Ctl+S, h: raise}
+  k: {t: Ctl+S, h: icons}
   l: [default]
 - p: [15, 37]
-  k: {t: Ctl+D, h: arrow}
+  k: {t: Ctl+D, h: arrows}
   l: [default]
 - p: [37, 4]
-  k: 📸 Screenshot
+  k: {t: '$$mdi:camera$$', h: área}
   l: [default]

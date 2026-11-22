@@ -4,28 +4,41 @@
 
 / {
     behaviors {
-        /* 
+        /*
         * 1. DTAP_TAB: Al pulsar una vez envía TAB, al pulsar dos veces rápidamente envía ESC.
         */
 
         dtap_tab: dtap_tab {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
-            tapping-term-ms = <500>;
+            tapping-term-ms = <200>;
             bindings = <&kp TAB>, <&kp ESC>, <&kp ESC>;
         };
 
         /*
-        * 2. SCREENSHOT_MACRO: Al pulsar esta tecla se envía la combinación Command+Control+Shift+4
-        *    para captura de pantalla en macOS.
+        * 2. SS_DANCE (pulgar izquierdo vacío): 1 toque no hace nada,
+        *    2 toques = captura de pantalla completa (Cmd+Ctrl+Shift+3),
+        *    3 toques = captura de un área (Cmd+Ctrl+Shift+4). Ambas van al portapapeles.
         */
 
-        screenshot_macro: screenshot_macro {
-            compatible = "zmk,behavior-macro";
+        ss_dance: ss_dance {
+            compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
-            label = "Screenshot";
-            tap-ms = <0>;
-            bindings = <&kp LGUI &kp LCTRL &kp LSHIFT &kp N4>;
+            tapping-term-ms = <250>;
+            bindings = <&none>, <&kp LG(LC(LS(N3)))>, <&kp LG(LC(LS(N4)))>;
+        };
+
+        /*
+        * 3. BT_CLEAR: borra el perfil Bluetooth actual SOLO si se sostiene 1 segundo.
+        *    Un toque accidental no hace nada. Uso: &bt_clear BT_CLR_CMD 0
+        */
+
+        bt_clear: bt_clear {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <1000>;
+            bindings = <&bt>, <&none>;
         };
     };
 
@@ -54,7 +67,7 @@
         };
 
         screenshot {
-            bindings = <&kp LGUI &kp LCTRL &kp LSHIFT &kp N4>;
+            bindings = <&kp LG(LC(LS(N4)))>;
             key-positions = <37 4>;
             slow-release;
             layers = <0>;
@@ -62,69 +75,68 @@
         };
     };
 
-    macros {
-    };
-
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             // -----------------------------------------------------------------------------------------
-            // |esctab|  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | BSPC |
-            // | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
-            // | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | ESC  |
-            //                    | GUI |     | SPC |   | ENT | CTRL | ALT |
+            // |tab/esc|  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | BSPC |
+            // | CTRL  |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
+            // | SHFT  |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | SHFT |
+            //                     | GUI | 📸  | SPC |   | ENT | GUI  | ALT |
 
             bindings = <
-&dtap_tab  &kp Q  &kp W  &kp E     &kp R   &kp T        &kp Y    &kp U     &kp I      &kp O    &kp P     &kp BSPC
-&kp LCTRL  &kp A  &kp S  &kp D     &kp F   &kp G        &kp H    &kp J     &kp K      &kp L    &kp SEMI  &kp SQT
-&kp LSHFT  &kp Z  &kp X  &kp C     &kp V   &kp B        &kp N    &kp M     &kp COMMA  &kp DOT  &kp FSLH  &kp RIGHT_SHIFT
-                         &kp LGUI  &trans  &kp SPACE    &kp RET  &kp RGUI  &kp RALT
+&dtap_tab  &kp Q  &kp W  &kp E     &kp R      &kp T        &kp Y    &kp U     &kp I      &kp O    &kp P     &kp BSPC
+&kp LCTRL  &kp A  &kp S  &kp D     &kp F      &kp G        &kp H    &kp J     &kp K      &kp L    &kp SEMI  &kp SQT
+&kp LSHFT  &kp Z  &kp X  &kp C     &kp V      &kp B        &kp N    &kp M     &kp COMMA  &kp DOT  &kp FSLH  &kp RIGHT_SHIFT
+                         &kp LGUI  &ss_dance  &kp SPACE    &kp RET  &kp RGUI  &kp RALT
             >;
         };
 
-        lower_layer {
+        numbers_layer {
             // -----------------------------------------------------------------------------------------
             // |  TAB |     |     |     |     |     |   |     |  7  |  8  |  9  |  0  | BSPC |
-            // | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |   | LFT |  4  |  5  |  6  |     |      |
-            // | SHFT |     |     |     |     |     |   |     |  1  |  2  |  3  |  /  |   *  |
+            // | CTRL |     |     |     |     |     |   |     |  4  |  5  |  6  |  -  |  +   |
+            // | SHFT |     |     |     |     |     |   |     |  1  |  2  |  3  |  /  |  *   |
             //                    | GUI |     | SPC |   | ENT |  0  |  .  |
 
             bindings = <
-&kp TAB           &trans  &trans  &trans    &trans  &trans       &trans   &kp N7  &kp N8   &kp N9  &kp N0     &kp BSPC
-&kp LEFT_CONTROL  &trans  &trans  &trans    &trans  &trans       &trans   &kp N4  &kp N5   &kp N6  &kp MINUS  &kp PLUS
-&kp LSHFT         &trans  &trans  &trans    &trans  &trans       &trans   &kp N1  &kp N2   &kp N3  &kp FSLH   &kp ASTRK
-                                  &kp LGUI  &trans  &kp SPACE    &kp RET  &kp N0  &kp DOT
+&kp TAB           &none  &none  &none     &none   &none        &none    &kp N7  &kp N8   &kp N9  &kp N0     &kp BSPC
+&kp LEFT_CONTROL  &none  &none  &none     &none   &none        &none    &kp N4  &kp N5   &kp N6  &kp MINUS  &kp PLUS
+&kp LSHFT         &none  &none  &none     &none   &none        &none    &kp N1  &kp N2   &kp N3  &kp FSLH   &kp ASTRK
+                                &kp LGUI  &trans  &kp SPACE    &kp RET  &kp N0  &kp DOT
             >;
         };
 
-        raise_layer {
+        icons_layer {
             // -----------------------------------------------------------------------------------------
-            // |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BSPC |
-            // | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
-            // | SHFT |     |     |     |     |     |   |  _  |  +  |  {  |  }  | "|" |  ~   |
-            //                    | GUI |     | SPC |   | ENT |     | ALT |
+            // |  TAB |  !  |     |  &  |  $  |  %  |   |  @  |  (  |  )  |  {  |  }  | BSPC |
+            // | CTRL |  *  |     |  #  |  +  |  =  |   |  -  |  [  |  ]  |  "  |  :  |  `   |
+            // | SHFT |  ~  |     |  /  |  |  |  \  |   |  _  |  <  |  >  |  ^  |  ?  | SHFT |
+            //                    | GUI |     | SPC |   | ENT | GUI | ALT |
 
             bindings = <
 &kp TAB           &kp EXCL      &trans  &kp AMPERSAND  &kp DLLR  &kp PRCNT        &kp AT     &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp LEFT_BRACE  &kp RIGHT_BRACE  &kp BSPC
-&kp LEFT_CONTROL  &kp ASTERISK  &trans  &kp HASH       &kp PLUS  &kp EQUAL        &kp MINUS  &kp LEFT_BRACKET      &kp RIGHT_BRACKET      &kp DOLLAR      &kp PERCENT      &kp GRAVE
+&kp LEFT_CONTROL  &kp ASTERISK  &trans  &kp HASH       &kp PLUS  &kp EQUAL        &kp MINUS  &kp LEFT_BRACKET      &kp RIGHT_BRACKET      &kp DQT         &kp COLON        &kp GRAVE
 &kp LEFT_SHIFT    &kp TILDE     &trans  &kp SLASH      &kp PIPE  &kp BACKSLASH    &kp UNDER  &kp LESS_THAN         &kp GREATER_THAN       &kp CARET       &kp QUESTION     &kp RIGHT_SHIFT
                                         &kp LGUI       &trans    &kp SPACE        &kp RET    &kp RIGHT_COMMAND     &kp RALT
             >;
         };
 
-        arrow_layer: arrow_layer {
+        arrows_layer: arrows_layer {
             // -----------------------------------------------------------------------------------------
-            // |    |     |     |     |     |     |   |     |     | up |     |     | BSPC |
-            // |    |     |     |     |     |     |   |     | left|down|right|     |      |
-            // |    |     |     |     |     |     |   |     |     |    |     |     |      |
-            //                    | GUI |     | SPC |   | ENT |     | ALT |
+            // |      |CLR* |     |     |     |     |   |     |     | UP  |     |     | BSPC |
+            // | CTRL |     |     |     |     |     |   |     |LEFT |DOWN |RIGHT|     |      |
+            // | SHFT |     |     |     |     |     |   |     | BT1 | BT2 | BT3 |     | SHFT |
+            //                    | GUI |     | SPC |   | ENT | GUI | ALT |
+            // CLR* = borra el perfil Bluetooth actual, solo sosteniendo 1 segundo.
+            // BT1-3 están donde 1 2 3 en la capa numbers.
 
             bindings = <
-&trans            &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &trans  &trans       &trans   &trans             &kp UP    &trans     &trans  &kp BACKSPACE
-&kp LEFT_CONTROL  &trans      &trans        &trans        &trans  &trans       &trans   &kp LEFT           &kp DOWN  &kp RIGHT  &trans  &trans
-&kp LEFT_SHIFT    &trans      &trans        &trans        &trans  &trans       &trans   &trans             &trans    &trans     &trans  &kp RIGHT_SHIFT
-                                            &kp LGUI      &trans  &kp SPACE    &kp RET  &kp RIGHT_COMMAND  &kp RALT
+&trans            &bt_clear BT_CLR_CMD 0  &trans  &trans    &trans  &trans       &trans   &trans             &kp UP          &trans          &trans  &kp BACKSPACE
+&kp LEFT_CONTROL  &trans                  &trans  &trans    &trans  &trans       &trans   &kp LEFT           &kp DOWN        &kp RIGHT       &trans  &trans
+&kp LEFT_SHIFT    &trans                  &trans  &trans    &trans  &trans       &trans   &bt BT_SEL 0       &bt BT_SEL 1    &bt BT_SEL 2    &trans  &kp RIGHT_SHIFT
+                                                  &kp LGUI  &trans  &kp SPACE    &kp RET  &kp RIGHT_COMMAND  &kp RALT
             >;
         };
     };
