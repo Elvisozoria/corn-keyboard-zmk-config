@@ -1,0 +1,35 @@
+name: Draw keymap
+on:
+  push:
+    branches: [master]
+    paths: [config/corne.keymap, keymap-drawer/config.yaml, keymap-drawer/index.html, .github/workflows/keymap-drawer.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency: { group: pages, cancel-in-progress: true }
+
+jobs:
+  draw:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: "${{ steps.deploy.outputs.page_url }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Parse and draw
+        run: |
+          uvx --from keymap-drawer keymap -c keymap-drawer/config.yaml parse -z config/corne.keymap > keymap-drawer/corne.yaml
+          uvx --from keymap-drawer keymap -c keymap-drawer/config.yaml draw keymap-drawer/corne.yaml -z corne > keymap-drawer/corne.svg
+      - name: Commit image for README
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add keymap-drawer
+          git diff --cached --quiet || { git commit -m "chore: update keymap drawing"; git push; }
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: keymap-drawer }
+      - id: deploy
+        uses: actions/deploy-pages@v4
