@@ -1,8 +1,8 @@
-# zmk-config-corn
+# corn-keyboard-zmk-config
 
 Configuración ZMK para mi Corne (nice!nano v2).
 
-**Keymap interactivo (buscar teclas, ver por capa):** https://elvisozoria.github.io/zmk-config-corn/
+**Keymap interactivo (buscar teclas, ver por capa):** https://elvisozoria.github.io/corn-keyboard-zmk-config/
 
 ![Keymap](keymap-drawer/corne.svg)
 
