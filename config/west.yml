@@ -2,6 +2,8 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: gudzpoz
+      url-base: https://github.com/gudzpoz
     # Additional modules containing boards/shields/custom code can be listed here as well
     # See https://docs.zephyrproject.org/3.2.0/develop/west/manifest.html#projects
   projects:
@@ -9,5 +11,10 @@ manifest:
       remote: zmkfirmware
       revision: main
       import: app/west.yml
+    # LEDs por tecla con condiciones (capa, batería, Bluetooth). Fijado a un commit:
+    # el módulo es nuevo y cambia seguido.
+    - name: zmk-rgb-matrix
+      remote: gudzpoz
+      revision: 3f1ce9b9869297cbbbac226d46bd16af9f20100c
   self:
     path: config

@@ -47,8 +47,8 @@ layers:
   - $$mdi:keyboard-tab$$
   - ''
   - ''
-  - ''
-  - ''
+  - $$mdi:skip-previous$$
+  - $$mdi:skip-next$$
   - ''
   - ''
   - '7'
@@ -58,10 +58,10 @@ layers:
   - $$mdi:backspace-outline$$
   - $$mdi:apple-keyboard-control$$
   - {type: held}
-  - ''
-  - ''
-  - ''
-  - ''
+  - $$mdi:volume-minus$$
+  - $$mdi:volume-plus$$
+  - $$mdi:play-pause$$
+  - $$mdi:volume-off$$
   - ''
   - '4'
   - '5'
@@ -71,8 +71,8 @@ layers:
   - $$mdi:apple-keyboard-shift$$
   - ''
   - ''
-  - ''
-  - ''
+  - $$mdi:brightness-5$$
+  - $$mdi:brightness-7$$
   - ''
   - ''
   - '1'
@@ -146,7 +146,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {type: held}
-  - {t: ▽, type: trans}
+  - {t: '$$mdi:information-outline$$', h: estado}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - $$mdi:arrow-left$$
@@ -158,8 +158,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - {t: '$$mdi:lightbulb-outline$$', h: luces}
+  - {t: '$$mdi:led-strip-variant$$', h: calibrar}
   - {t: ▽, type: trans}
   - {t: '$$mdi:bluetooth$$', h: BT1}
   - {t: '$$mdi:bluetooth$$', h: BT2}

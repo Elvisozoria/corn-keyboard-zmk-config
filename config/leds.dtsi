@@ -1,0 +1,258 @@
+/*
+ * Feedback con los LEDs por tecla (módulo zmk-rgb-matrix).
+ * Idea: las luces solo aparecen cuando hay algo que mostrar y luego se apagan.
+ *
+ *  - Mapa de capa: mientras sostienes una capa, se prenden solo las teclas que hacen algo en ella.
+ *  - Bluetooth: en la capa arrows (y en el resumen) BT1/BT2/BT3 muestran el perfil activo:
+ *      verde = conectado, amarillo lento = esperando reconectar, azul rápido = listo para emparejar.
+ *  - Resumen (tecla F en arrows, al encender y al despertar): cada mitad se pinta según su batería
+ *      (rojo → naranja → verde) + estado del Bluetooth, durante 4 segundos.
+ *  - Interruptor global: V en arrows apaga/enciende todas las luces (se recuerda al reiniciar).
+ *  - Calibración: B en arrows recorre los LEDs uno por uno (para verificar el orden de la cadena).
+ *
+ * Posiciones de teclas (0-41):
+ *   0  1  2  3  4  5      6  7  8  9 10 11
+ *  12 13 14 15 16 17     18 19 20 21 22 23
+ *  24 25 26 27 28 29     30 31 32 33 34 35
+ *           36 37 38     39 40 41
+ */
+
+#include <dt-bindings/zmk/ext_power.h>
+
+#define LAYER_NUMBERS 1
+#define LAYER_ICONS 2
+#define LAYER_ARROWS 3
+
+/ {
+    rgb_conditions: rgb_conditions {
+        compatible = "keypaw,rgb-conditions";
+
+        c_num: c_num {
+            compatible = "keypaw,rgb-condition-layer";
+            layer = <LAYER_NUMBERS>;
+        };
+        c_sym: c_sym {
+            compatible = "keypaw,rgb-condition-layer";
+            layer = <LAYER_ICONS>;
+        };
+        c_arr: c_arr {
+            compatible = "keypaw,rgb-condition-layer";
+            layer = <LAYER_ARROWS>;
+        };
+
+        // Resumen: lo prende/apaga la macro stat_show
+        c_stat: c_stat {
+            compatible = "keypaw,rgb-condition-latch";
+            tg_stat: tg_stat {
+                compatible = "keypaw,behavior-rgb-overlay-toggle";
+                #binding-cells = <0>;
+            };
+        };
+
+        // Calibración: recorre la cadena de LEDs
+        c_cal: c_cal {
+            compatible = "keypaw,rgb-condition-latch";
+            tg_cal: tg_cal {
+                compatible = "keypaw,behavior-rgb-overlay-toggle";
+                #binding-cells = <0>;
+            };
+        };
+
+        // Cuándo mostrar el estado del Bluetooth
+        c_btview: c_btview {
+            compatible = "keypaw,rgb-condition-or";
+            conditions = <&c_arr &c_stat>;
+        };
+
+        // Cuándo hace falta corriente en los LEDs (todo lo demás los deja sin corriente)
+        c_power: c_power {
+            compatible = "keypaw,rgb-condition-or";
+            conditions = <&c_num &c_sym &c_arr &c_stat &c_cal>;
+        };
+
+        // Estado del perfil Bluetooth activo (0 = BT1, 1 = BT2, 2 = BT3)
+        e0_ok: e0_ok { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "connected"; profile = <0>; };
+        e0_op: e0_op { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "open"; profile = <0>; };
+        e0_no: e0_no { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "disconnected"; profile = <0>; };
+        e1_ok: e1_ok { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "connected"; profile = <1>; };
+        e1_op: e1_op { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "open"; profile = <1>; };
+        e1_no: e1_no { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "disconnected"; profile = <1>; };
+        e2_ok: e2_ok { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "connected"; profile = <2>; };
+        e2_op: e2_op { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "open"; profile = <2>; };
+        e2_no: e2_no { compatible = "keypaw,rgb-condition-endpoint"; transport = "ble"; state = "disconnected"; profile = <2>; };
+
+        b0_ok: b0_ok { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e0_ok>; };
+        b0_op: b0_op { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e0_op>; };
+        b0_no: b0_no { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e0_no>; };
+        b1_ok: b1_ok { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e1_ok>; };
+        b1_op: b1_op { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e1_op>; };
+        b1_no: b1_no { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e1_no>; };
+        b2_ok: b2_ok { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e2_ok>; };
+        b2_op: b2_op { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e2_op>; };
+        b2_no: b2_no { compatible = "keypaw,rgb-condition-and"; conditions = <&c_btview &e2_no>; };
+    };
+
+    macros {
+        // Resumen de 4 segundos (tecla F en arrows)
+        stat_show: stat_show {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&tg_stat>, <&macro_wait_time 4000>, <&tg_stat>;
+        };
+
+        // Igual, pero esperando a que la batería tenga una lectura real (al encender / despertar)
+        boot_st: boot_st {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_wait_time 1500>, <&tg_stat>, <&macro_wait_time 4000>, <&tg_stat>;
+        };
+    };
+
+    rgb_triggers: rgb_triggers {
+        compatible = "keypaw,rgb-trigger-table";
+
+        // Al arrancar: LEDs sin corriente (despertar del sueño profundo también es un arranque)
+        t_init: t_init {
+            on-enter = <&ext_power EP_OFF>;
+        };
+
+        // Corriente solo mientras hay algo que mostrar
+        t_power: t_power {
+            condition = <&c_power>;
+            on-enter = <&ext_power EP_ON>;
+            on-exit = <&ext_power EP_OFF>;
+        };
+
+        // Resumen al encender y al despertar
+        t_boot: t_boot {
+            on-enter = <&boot_st>;
+        };
+    };
+};
+
+&rgb_matrix {
+    // El orden aquí es el orden de pintado: lo de abajo queda encima.
+
+    // Mantiene el refresco activo mientras hay corriente (pinta negro en el underglow), para que
+    // las mitades vuelvan a pintar apenas les llega la corriente.
+    o_alive: o_alive {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_power>;
+        leds = <0 1 2 3 4 5>;
+        fx_alive {
+            compatible = "keypaw,rgb-matrix-breathe";
+            color = <0x000000>;
+        };
+    };
+
+    // ---- Mapa de capa: numbers ----
+    o_num_dig: o_num_dig {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_num>;
+        keys = <7 8 9 10 19 20 21 31 32 33 40>;
+        fx_num_dig { compatible = "keypaw,rgb-matrix-solid"; color = <0x00B4FF>; };
+    };
+    o_num_ops: o_num_ops {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_num>;
+        keys = <22 23 34 35 41>;
+        fx_num_ops { compatible = "keypaw,rgb-matrix-solid"; color = <0xFFFFFF>; };
+    };
+    // Multimedia: tenue mientras sostienes la capa y destello al presionar
+    o_num_med: o_num_med {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_num>;
+        keys = <3 4 14 15 16 17 27 28>;
+        fx_num_med {
+            compatible = "keypaw,rgb-matrix-reactive";
+            color = <0xC000FF>;
+            background-brightness = <35>;
+            duration = <400>;
+        };
+    };
+
+    // ---- Mapa de capa: icons ----
+    o_sym_brk: o_sym_brk {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_sym>;
+        keys = <7 8 9 10 19 20 31 32>;
+        fx_sym_brk { compatible = "keypaw,rgb-matrix-solid"; color = <0xFF6000>; };
+    };
+    o_sym_oth: o_sym_oth {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_sym>;
+        keys = <1 3 4 5 13 15 16 17 25 27 28 29 6 18 21 22 23 30 33 34>;
+        fx_sym_oth { compatible = "keypaw,rgb-matrix-solid"; color = <0xFFC800>; };
+    };
+
+    // ---- Mapa de capa: arrows ----
+    o_arr_dir: o_arr_dir {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_arr>;
+        keys = <8 19 20 21>;
+        fx_arr_dir { compatible = "keypaw,rgb-matrix-solid"; color = <0x00FF80>; };
+    };
+    o_arr_bt: o_arr_bt {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_arr>;
+        keys = <31 32 33>;
+        fx_arr_bt { compatible = "keypaw,rgb-matrix-solid"; color = <0x202060>; };
+    };
+    o_arr_clr: o_arr_clr {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_arr>;
+        keys = <1>;
+        fx_arr_clr { compatible = "keypaw,rgb-matrix-solid"; color = <0x600000>; };
+    };
+    o_arr_tool: o_arr_tool {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_arr>;
+        keys = <16 28>;
+        fx_arr_tool { compatible = "keypaw,rgb-matrix-solid"; color = <0x808080>; };
+    };
+
+    // ---- Resumen: batería de cada mitad (rojo 0 % → verde 100 %) ----
+    o_batt: o_batt {
+        compatible = "keypaw,rgb-overlay-battery";
+        condition = <&c_stat>;
+        mode = "hue";
+        hue-empty = <0>;
+        hue-full = <120>;
+        keys = <0 1 2 3 4 5 12 13 14 15 16 17 24 25 26 27 28 29 36 37 38
+                6 7 8 9 10 11 18 19 20 21 22 23 30 31 32 33 34 35 39 40 41>;
+    };
+
+    // ---- Bluetooth: perfil activo sobre BT1 (31), BT2 (32), BT3 (33) ----
+    // "disconnected" incluye "open", por eso va primero y "open" se pinta encima.
+    o_b0_no: o_b0_no { compatible = "keypaw,rgb-overlay"; condition = <&b0_no>; keys = <31>;
+        fx_b0_no { compatible = "keypaw,rgb-matrix-breathe"; color = <0xFFB000>; duration = <2000>; }; };
+    o_b1_no: o_b1_no { compatible = "keypaw,rgb-overlay"; condition = <&b1_no>; keys = <32>;
+        fx_b1_no { compatible = "keypaw,rgb-matrix-breathe"; color = <0xFFB000>; duration = <2000>; }; };
+    o_b2_no: o_b2_no { compatible = "keypaw,rgb-overlay"; condition = <&b2_no>; keys = <33>;
+        fx_b2_no { compatible = "keypaw,rgb-matrix-breathe"; color = <0xFFB000>; duration = <2000>; }; };
+    o_b0_op: o_b0_op { compatible = "keypaw,rgb-overlay"; condition = <&b0_op>; keys = <31>;
+        fx_b0_op { compatible = "keypaw,rgb-matrix-breathe"; color = <0x0040FF>; duration = <500>; }; };
+    o_b1_op: o_b1_op { compatible = "keypaw,rgb-overlay"; condition = <&b1_op>; keys = <32>;
+        fx_b1_op { compatible = "keypaw,rgb-matrix-breathe"; color = <0x0040FF>; duration = <500>; }; };
+    o_b2_op: o_b2_op { compatible = "keypaw,rgb-overlay"; condition = <&b2_op>; keys = <33>;
+        fx_b2_op { compatible = "keypaw,rgb-matrix-breathe"; color = <0x0040FF>; duration = <500>; }; };
+    o_b0_ok: o_b0_ok { compatible = "keypaw,rgb-overlay"; condition = <&b0_ok>; keys = <31>;
+        fx_b0_ok { compatible = "keypaw,rgb-matrix-solid"; color = <0x00FF30>; }; };
+    o_b1_ok: o_b1_ok { compatible = "keypaw,rgb-overlay"; condition = <&b1_ok>; keys = <32>;
+        fx_b1_ok { compatible = "keypaw,rgb-matrix-solid"; color = <0x00FF30>; }; };
+    o_b2_ok: o_b2_ok { compatible = "keypaw,rgb-overlay"; condition = <&b2_ok>; keys = <33>;
+        fx_b2_ok { compatible = "keypaw,rgb-matrix-solid"; color = <0x00FF30>; }; };
+
+    // ---- Calibración: un punto recorre la cadena de LEDs ----
+    o_cal: o_cal {
+        compatible = "keypaw,rgb-overlay";
+        condition = <&c_cal>;
+        all-leds;
+        fx_cal {
+            compatible = "keypaw,rgb-matrix-rain";
+            mode = "flow";
+            color = <0xFFFFFF>;
+            step-interval-ms = <700>;
+        };
+    };
+};

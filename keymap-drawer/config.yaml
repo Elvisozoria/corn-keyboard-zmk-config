@@ -26,5 +26,16 @@ parse_config:
     "&kp RET": "$$mdi:keyboard-return$$"
     "&kp SPACE": "$$mdi:keyboard-space$$"
     "&kp TAB": "$$mdi:keyboard-tab$$"
+    "&kp C_PREV": "$$mdi:skip-previous$$"
+    "&kp C_NEXT": "$$mdi:skip-next$$"
+    "&kp C_VOL_DN": "$$mdi:volume-minus$$"
+    "&kp C_VOL_UP": "$$mdi:volume-plus$$"
+    "&kp C_PP": "$$mdi:play-pause$$"
+    "&kp C_MUTE": "$$mdi:volume-off$$"
+    "&kp C_BRI_DN": "$$mdi:brightness-5$$"
+    "&kp C_BRI_UP": "$$mdi:brightness-7$$"
+    "&stat_show": {t: "$$mdi:information-outline$$", h: "estado"}
+    "&rgb_matrix RGB_TOG": {t: "$$mdi:lightbulb-outline$$", h: "luces"}
+    "&tg_cal": {t: "$$mdi:led-strip-variant$$", h: "calibrar"}
   zmk_combos:
     screenshot: {key: {t: "$$mdi:camera$$", h: "área"}}

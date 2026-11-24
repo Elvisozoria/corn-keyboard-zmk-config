@@ -1,0 +1,27 @@
+/*
+ * LEDs de la mitad derecha: 27 en cadena (6 underglow + 21 por tecla), orden del Corne v3
+ * (crkbd rev1 en QMK). Si la tecla de calibración muestra otro orden, se corrige aquí.
+ */
+#include <dt-bindings/keypaw/rgb_matrix.h>
+
+&led_strip {
+    chain-length = <27>;
+};
+
+/ {
+    rgb_matrix: rgb {
+        compatible = "keypaw,rgb-matrix";
+        #binding-cells = <2>;
+        strip = <&led_strip>;
+        physical-layout = <&foostan_corne_6col_layout>;
+        initial-on;
+        max-brightness = <50>;
+        initial-brightness = <60>;
+        mapping = <
+            // underglow (debajo de la placa)
+            KP_RGB_NO_KEY(850, 140) KP_RGB_NO_KEY(1056, 122) KP_RGB_NO_KEY(1256, 163) KP_RGB_NO_KEY(1256, 269) KP_RGB_NO_KEY(1056, 328) KP_RGB_NO_KEY(850, 352)
+            // por tecla, en el orden de la cadena
+            39 30 18  6  7 19 31 40 41 32 20  8  9 21 33 34 22 10 11 23 35
+        >;
+    };
+};
