@@ -56,7 +56,9 @@ fetch('corne.svg').then(r => r.text()).then(txt => {
     const raw = q.value.trim().toLowerCase();
     // alias para encontrar teclas dibujadas como ícono (se busca en el nombre del ícono)
     const term = ({cmd: 'command', ctrl: 'control', alt: 'option', bt: 'bluetooth', screenshot: 'camera', captura: 'camera',
-                   enter: 'return', bspc: 'backspace', borrar: 'backspace', espacio: 'space', flecha: 'arrow'})[raw] || raw;
+                   enter: 'return', bspc: 'backspace', borrar: 'backspace', espacio: 'space', flecha: 'arrow',
+                   volumen: 'volume', vol: 'volume', musica: 'play', play: 'play', brillo: 'brightness',
+                   luces: 'lightbulb', luz: 'lightbulb', estado: 'information', bateria: 'information', calibrar: 'led-strip'})[raw] || raw;
     let n = 0;
     svg.classList.toggle('searching', !!term);
     svg.querySelectorAll("g.key, g.combo").forEach(k => {
